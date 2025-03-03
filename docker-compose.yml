@@ -16,3 +16,4 @@ services:
     container_name: my_php
     volumes:
       - .:/var/www/html
+    working_dir: /var/www/html
