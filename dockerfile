@@ -1,24 +1,31 @@
 FROM php:8.2-fpm
 
-# Installer les dépendances système
+# Install system dependencies
 RUN apt-get update && apt-get install -y \
     bash \
     procps \
     unzip \
     git \
-    curl
+    curl \
+    libpng-dev \
+    libjpeg-dev \
+    libfreetype6-dev \
+    libxml2-dev
 
-# Installer Composer
+# Install PHP extensions
+RUN docker-php-ext-install pdo pdo_mysql
+
+# Install Composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer --version=2.7.5
 
-# Définir le répertoire de travail
-WORKDIR /var/www/html
-
-# Copier le fichier start.sh dans le conteneur
+# Copier start.sh in the container
 COPY config/scripts/start.sh /usr/local/bin/start.sh
 
-# Donner les droits d'exécution au script
+# Give execution rights on the start.sh script
 RUN chmod +x /usr/local/bin/start.sh
 
-# Définir l'entrée du conteneur pour exécuter le script start.sh
+# Défine the working directory
+WORKDIR /var/www/html/app
+
+# Define the container's entrypoint
 CMD ["sh", "/usr/local/bin/start.sh"]
